@@ -1,1 +1,17 @@
 Git log: /
+
+<script type="text/javascript">
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      var log = JSON.parse(xhr.responseText);
+      console.log(log);
+      log.log.forEach(function(item) {
+        console.log(item);
+        document.write(item);
+      });
+    }
+  }
+  xhr.open('GET', '/log');
+  xhr.send();
+</script>
