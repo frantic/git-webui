@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Git WebUI</title>
+  <script type="text/javascript" src="/lib/react.js"></script>
+  <script type="text/javascript" src="/lib/jsx-transform.js"></script>
+  <script type="text/javascript">
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        var log = JSON.parse(xhr.responseText);
+        console.log(log);
+        log.log.forEach(function(item) {
+          console.log(item);
+        });
+      }
+    }
+    xhr.open('GET', '/log');
+    xhr.send();
+  </script>
+  <script type="text/jsx">
+    var Root = React.createClass({
+      render: function() {
+        return (<div>It works!</div>);
+      }
+    });
+    React.renderComponent(<Root />, document.getElementById('root'));
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
