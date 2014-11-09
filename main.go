@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
 func frontendHandler(w http.ResponseWriter, r *http.Request) {
-	ui, _ := ioutil.ReadFile("log.html")
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(ui)
+	http.ServeFile(w, r, "log.html")
 }
 
 func logHandler(w http.ResponseWriter, r *http.Request) {
