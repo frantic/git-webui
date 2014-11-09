@@ -1,4 +1,6 @@
 git-webui
 =========
 
-[pre-alpha] Web UI for local git development
+WARNING: Complete dogscience. I have no idea what I'm doing.
+
+The goal of the project is to creat modern, fast and easy to use tool for working with local git repositories. Potentially it will also have private sharing feature over local network (think hackathon projects).
