@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/libgit2/git2go"
+	"log"
 	"net/http"
 	"os"
 )
@@ -18,6 +20,13 @@ func logHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	path, _ := os.Getwd()
+	repo, err := git.OpenRepository(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(repo)
+
 	fmt.Println(os.Getwd())
 	fmt.Println("Visit http://localhost:8080/")
 	http.HandleFunc("/", frontendHandler)
