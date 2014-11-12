@@ -26,6 +26,15 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(repo)
+	branches, _ := repo.NewBranchIterator(git.BranchLocal)
+	branch, _, _ := branches.Next()
+	fmt.Println(branch.Name())
+	walk, _ := repo.Walk()
+	walk.PushHead()
+	walk.Iterate(func(commit *git.Commit) bool {
+		fmt.Print(commit.Message())
+		return true
+	})
 
 	fmt.Println(os.Getwd())
 	fmt.Println("Visit http://localhost:8080/")
