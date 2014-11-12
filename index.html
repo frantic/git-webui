@@ -5,26 +5,40 @@
   <script type="text/javascript" src="/lib/react.js"></script>
   <script type="text/javascript" src="/lib/jsx-transform.js"></script>
   <script type="text/javascript">
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4) {
-        var log = JSON.parse(xhr.responseText);
-        console.log(log);
-        log.log.forEach(function(item) {
-          console.log(item);
-        });
+    function loadLog(cb) {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          var log = JSON.parse(xhr.responseText);
+          cb(log);
+        }
       }
+      xhr.open('GET', '/log');
+      xhr.send();
     }
-    xhr.open('GET', '/log');
-    xhr.send();
   </script>
   <script type="text/jsx">
     var Root = React.createClass({
+      getInitialState: function() {
+        return { log: [] };
+      },
+
+      componentDidMount: function() {
+        loadLog(this.handleLog);
+      },
+
+      handleLog: function(log) {
+        this.setState({log: log});
+      },
+
       render: function() {
-        return (<div>It works!</div>);
+        var items = this.state.log.map(function(item) {
+          return <div key={item.sha1}>{item.sha1} {item.message}</div>;
+        })
+        return <pre>{items}</pre>;
       }
     });
-    React.renderComponent(<Root />, document.getElementById('root'));
+    React.render(<Root />, document.getElementById('root'));
   </script>
 </head>
 <body>
