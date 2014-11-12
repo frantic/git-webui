@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/libgit2/git2go"
 	"log"
@@ -14,12 +15,12 @@ func frontendHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, file)
 }
 
-func logHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"log": ["a0372ba", "93caff1"]}`))
+type Commit struct {
+	Sha1    string `json:"sha1"`
+	Message string `json:"message"`
 }
 
-func main() {
+func logHandler(w http.ResponseWriter, r *http.Request) {
 	path, _ := os.Getwd()
 	repo, err := git.OpenRepository(path)
 	if err != nil {
@@ -30,12 +31,24 @@ func main() {
 	branch, _, _ := branches.Next()
 	fmt.Println(branch.Name())
 	walk, _ := repo.Walk()
+	commits := []Commit{}
 	walk.PushHead()
 	walk.Iterate(func(commit *git.Commit) bool {
-		fmt.Print(commit.Message())
+		info := &Commit{
+			Sha1:    commit.Id().String(),
+			Message: commit.Message(),
+		}
+		commits = append(commits, *info)
+		fmt.Print(info)
 		return true
 	})
 
+	w.Header().Set("Content-Type", "application/json")
+	b, _ := json.Marshal(commits)
+	w.Write(b)
+}
+
+func main() {
 	fmt.Println(os.Getwd())
 	fmt.Println("Visit http://localhost:8080/")
 	http.HandleFunc("/", frontendHandler)
