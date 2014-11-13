@@ -20,7 +20,7 @@ type Commit struct {
 	Message string `json:"message"`
 }
 
-func getDiff() {
+func diffHandler(w http.ResponseWriter, r *http.Request) {
 	path, _ := os.Getwd()
 	repo, _ := git.OpenRepository(path)
 	walk, _ := repo.Walk()
@@ -39,20 +39,24 @@ func getDiff() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	s := ""
 	diff.ForEach(func(delta git.DiffDelta, i float64) (git.DiffForEachHunkCallback, error) {
-		fmt.Println(delta.OldFile.Path, " -> ", delta.NewFile.Path)
+		// fmt.Println(delta.OldFile.Path, " -> ", delta.NewFile.Path)
+		s = s + delta.OldFile.Path + " -> " + delta.NewFile.Path + "\n"
 		return func(hunk git.DiffHunk) (git.DiffForEachLineCallback, error) {
-			fmt.Print(hunk.Header)
+			s = s + hunk.Header
 			return func(line git.DiffLine) error {
 				if line.Origin == git.DiffLineAddition {
-					fmt.Print("+", line.Content)
+					s = s + "+" + line.Content
 				} else {
-					fmt.Print("-", line.Content)
+					s = s + "-" + line.Content
 				}
 				return nil
 			}, nil
 		}, nil
 	}, git.DiffDetailLines)
+	b, _ := json.Marshal(s)
+	w.Write(b)
 }
 
 func logHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,6 +91,6 @@ func main() {
 	fmt.Println("Visit http://localhost:8080/")
 	http.HandleFunc("/", frontendHandler)
 	http.HandleFunc("/log", logHandler)
-	// http.ListenAndServe(":8080", nil)
-	getDiff()
+	http.HandleFunc("/diff", diffHandler)
+	http.ListenAndServe(":8080", nil)
 }

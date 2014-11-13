@@ -5,7 +5,7 @@
   <script type="text/javascript" src="/lib/react.js"></script>
   <script type="text/javascript" src="/lib/jsx-transform.js"></script>
   <script type="text/javascript">
-    function loadLog(cb) {
+    function loadJSON(path, cb) {
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
@@ -13,7 +13,7 @@
           cb(log);
         }
       }
-      xhr.open('GET', '/log');
+      xhr.open('GET', path);
       xhr.send();
     }
   </script>
@@ -24,7 +24,7 @@
       },
 
       componentDidMount: function() {
-        loadLog(this.handleLog);
+        loadJSON('/log', this.handleLog);
       },
 
       handleLog: function(log) {
@@ -33,9 +33,32 @@
 
       render: function() {
         var items = this.state.log.map(function(item) {
-          return <div key={item.sha1}>{item.sha1} {item.message}</div>;
+          return <LogEntry key={item.sha1} sha1={item.sha1} message={item.message} />;
         })
         return <pre>{items}</pre>;
+      }
+    });
+
+    var LogEntry = React.createClass({
+      render: function() {
+        return (
+          <div onClick={this.handleClick}>
+            {this.props.sha1} {this.props.message}
+            {this.state.diff}
+          </div>
+        );
+      },
+
+      getInitialState: function() {
+        return { diff: null };
+      },
+
+      handleClick: function() {
+        loadJSON('/diff', this.handleDiff);
+      },
+
+      handleDiff: function(diff) {
+        this.setState({diff: diff});
       }
     });
     React.render(<Root />, document.getElementById('root'));
