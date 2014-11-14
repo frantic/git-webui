@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func frontendHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,11 +22,17 @@ type Commit struct {
 }
 
 func diffHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	sha := strings.Split(r.URL.Path, "/")[2]
 	path, _ := os.Getwd()
 	repo, _ := git.OpenRepository(path)
 	walk, _ := repo.Walk()
 	var newTree, oldTree *git.Tree
-	walk.PushHead()
+	oid, x := git.NewOid(sha)
+	if x != nil {
+		log.Fatal(x)
+	}
+	walk.Push(oid)
 	walk.Iterate(func(commit *git.Commit) bool {
 		if newTree == nil {
 			newTree, _ = commit.Tree()
@@ -91,6 +98,6 @@ func main() {
 	fmt.Println("Visit http://localhost:8080/")
 	http.HandleFunc("/", frontendHandler)
 	http.HandleFunc("/log", logHandler)
-	http.HandleFunc("/diff", diffHandler)
+	http.HandleFunc("/diff/", diffHandler)
 	http.ListenAndServe(":8080", nil)
 }

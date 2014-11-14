@@ -54,7 +54,7 @@
       },
 
       handleClick: function() {
-        loadJSON('/diff', this.handleDiff);
+        loadJSON('/diff/' + this.props.sha1, this.handleDiff);
       },
 
       handleDiff: function(diff) {
