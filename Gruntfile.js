@@ -1,7 +1,3 @@
-function transformJSXES6(code) {
-  return require('grunt-react').browserify(code, {harmony: true});
-}
-
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -12,7 +8,7 @@ module.exports = function(grunt) {
     },
     browserify: {
       options: {
-        transform: [ transformJSXES6 ]
+        transform: [["reactify", {"es6": true }]]
       },
       app: {
         src: 'src/main.js',

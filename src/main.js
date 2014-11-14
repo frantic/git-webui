@@ -1,6 +1,7 @@
 /* global XMLHttpRequest, document */
 
 var React = require('react');
+var ReactStyle = require('react-style');
 
 function loadJSON(path, cb) {
   var xhr = new XMLHttpRequest();
@@ -39,7 +40,7 @@ var LogEntry = React.createClass({
   render: function() {
     return (
       <div onClick={this.handleClick}>
-        {this.props.sha1} {this.props.message}
+        <span styles={[styles]}>{this.props.sha1}</span> {this.props.message}
         {this.state.diff}
       </div>
     );
@@ -58,6 +59,11 @@ var LogEntry = React.createClass({
   }
 });
 
+var styles = ReactStyle({
+  color: '#119911',
+});
+
 document.addEventListener('DOMContentLoaded', function () {
+  ReactStyle.inject();
   React.render(<Root />, document.body);
 });
