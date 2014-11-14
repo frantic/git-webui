@@ -1,10 +1,14 @@
+function transformJSXES6(code) {
+  return require('grunt-react').browserify(code, {harmony: true});
+}
+
 module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
       options: {
-        transform: [ require('grunt-react').browserify ]
+        transform: [ transformJSXES6 ]
       },
       app: {
         src: 'src/main.js',

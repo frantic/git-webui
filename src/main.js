@@ -26,9 +26,9 @@ var Root = React.createClass({
   },
 
   render: function() {
-    var items = this.state.log.map(function(item) {
-      return <LogEntry key={item.sha1} sha1={item.sha1} message={item.message} />;
-    });
+    var items = this.state.log.map(
+      (item) => <LogEntry key={item.sha1} sha1={item.sha1} message={item.message} />
+    );
     return <pre>{items}</pre>;
   }
 });
