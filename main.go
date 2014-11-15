@@ -40,7 +40,9 @@ func diffHandler(w http.ResponseWriter, r *http.Request) {
 		oldTree, _ = commit.Tree()
 		return false
 	})
-	opts := &git.DiffOptions{}
+	opts := &git.DiffOptions{
+		ContextLines: 2,
+	}
 	diff, err := repo.DiffTreeToTree(oldTree, newTree, opts)
 	if err != nil {
 		log.Fatal(err)
@@ -53,8 +55,10 @@ func diffHandler(w http.ResponseWriter, r *http.Request) {
 			return func(line git.DiffLine) error {
 				if line.Origin == git.DiffLineAddition {
 					s = s + "+" + line.Content
-				} else {
+				} else if line.Origin == git.DiffLineDeletion {
 					s = s + "-" + line.Content
+				} else {
+					s = s + " " + line.Content
 				}
 				return nil
 			}, nil
