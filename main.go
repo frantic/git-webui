@@ -22,7 +22,6 @@ type Commit struct {
 }
 
 func diffHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path)
 	sha := strings.Split(r.URL.Path, "/")[2]
 	path, _ := os.Getwd()
 	repo, _ := git.OpenRepository(path)
@@ -48,7 +47,6 @@ func diffHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	s := ""
 	diff.ForEach(func(delta git.DiffDelta, i float64) (git.DiffForEachHunkCallback, error) {
-		// fmt.Println(delta.OldFile.Path, " -> ", delta.NewFile.Path)
 		s = s + delta.OldFile.Path + " -> " + delta.NewFile.Path + "\n"
 		return func(hunk git.DiffHunk) (git.DiffForEachLineCallback, error) {
 			s = s + hunk.Header
@@ -72,10 +70,6 @@ func logHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(repo)
-	branches, _ := repo.NewBranchIterator(git.BranchLocal)
-	branch, _, _ := branches.Next()
-	fmt.Println(branch.Name())
 	walk, _ := repo.Walk()
 	commits := []Commit{}
 	walk.PushHead()
