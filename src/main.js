@@ -40,7 +40,7 @@ var LogEntry = React.createClass({
   render: function() {
     return (
       <div onClick={this.handleClick}>
-        <span styles={[styles]}>{this.props.sha1}</span> {this.props.message}
+        <span styles={[styles]}>{this.props.sha1.substr(0, 8)}</span> {this.props.message}
         {this.state.diff}
       </div>
     );
@@ -61,6 +61,7 @@ var LogEntry = React.createClass({
 
 var styles = ReactStyle({
   color: '#119911',
+  fontSize: 8,
 });
 
 document.addEventListener('DOMContentLoaded', function () {
