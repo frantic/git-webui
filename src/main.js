@@ -7,7 +7,7 @@
 var React = require('react');
 var ReactStyle = require('react-style');
 
-function loadJSON(path, cb) {
+function loadJSON(path: string, cb: (log: Array<Object>) => void) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
@@ -28,7 +28,7 @@ var Root = React.createClass({
     loadJSON('/log', this.handleLog);
   },
 
-  handleLog: function(log) {
+  handleLog: function(log: Array<Object>) {
     this.setState({log: log});
   },
 
