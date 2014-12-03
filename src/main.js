@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 /* global XMLHttpRequest, document */
 
 var React = require('react');
